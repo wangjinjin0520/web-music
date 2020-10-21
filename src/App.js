@@ -1,26 +1,26 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { memo , Suspense} from 'react';
+import routes from './router';
+import { renderRoutes } from 'react-router-config';
+import { HashRouter } from 'react-router-dom';
+import store from './store';
+import { Provider } from 'react-redux';
 
-function App() {
+import AppHeader from '@/components/app-header';
+import AppFooter from '@/components/app-footer';
+
+export default memo(function App() {
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
-
-export default App;
+    <Provider store={store}>
+      {/*renderRoutes内部帮助渲染了很多的Switch，外层一定要用router包裹*/}
+      {/*组件外部一定要用HashRouter或者BrowserRouter包裹*/}
+      <HashRouter>
+        <AppHeader />
+        <Suspense fallback={<div>page loading</div>}>
+          {renderRoutes(routes)}
+        </Suspense>
+        <AppFooter />
+      </HashRouter>
+    </Provider>
+  )
+})
