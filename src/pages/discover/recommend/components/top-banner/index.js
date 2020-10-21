@@ -35,7 +35,7 @@ export default memo(function TopBanner() {
   }, [setCurrentIndex])
 
   return (
-    <BannerWrapper bgImage={bgImage}>
+    <BannerWrapper bgImage={bgImage} className="test">
       <div className="banner wrap-v2">
         <BannerLeft>
           <Carousel effect="fade" ref={bannerRef} afterChange={afterCarouselChange}>

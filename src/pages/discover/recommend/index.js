@@ -8,11 +8,7 @@ import {
 export default memo(function Recommend(props) {
   return (
     <RecommendWrapper>
-      {/*<TopBanner></TopBanner>*/}
-      <div>as</div>
-      <div>as</div>
-      <div>as</div>
-      <div>as</div>
+      <TopBanner></TopBanner>
     </RecommendWrapper>
   )
 })

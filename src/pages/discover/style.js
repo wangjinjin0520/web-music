@@ -1,8 +1,10 @@
 import styled from 'styled-components'
 
 export const DiscoverWrapper = styled.div`
-    height: 34px;
-    background-color: #C20C0C; 
+   .discover-nav{
+      height: 34px;
+      background-color: #C20C0C;
+   }
     
   .discoverLink {
     display: flex;

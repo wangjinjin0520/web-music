@@ -1,22 +1,23 @@
 import styled from 'styled-components';
 
 export const BannerWrapper = styled.div`
-  background-size: 6000px;
-  background: url(${props => props.bgImage}) center;
-  
+  // background-image: url(${props =>props.bgImage});
+  // background-size: 6000px;  
+  // background-position: center center;
+  background: url(${props =>props.bgImage}) center center/6000px;
   .banner {
     height: 270px;
     display: flex;
-    //position: relative;
+    position: relative;
   }
 `
 
 export const BannerLeft = styled.div`
   width: 730px;
-  
+
   .banner-item {
-    //overflow: hidden;
-    //height: 270px;
+    overflow: hidden;
+    height: 270px;
     .image {
       width: 100%;
     }

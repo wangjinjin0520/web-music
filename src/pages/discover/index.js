@@ -11,16 +11,17 @@ export default memo(function Discover(props) {
   const { route } = props;
   return (
     <DiscoverWrapper>
-      <div className="discoverLink wrap-v1">
-        {dicoverMenu.map((item)=>{
-          return (
-            <div className="item" key={item.title}>
-              <NavLink to={item.link}>{item.title}</NavLink>
-            </div>)
-        })}
+      <div className="discover-nav">
+        <div className="discoverLink wrap-v1">
+          {dicoverMenu.map((item)=>{
+            return (
+              <div className="item" key={item.title}>
+                <NavLink to={item.link}>{item.title}</NavLink>
+              </div>)
+          })}
+        </div>
       </div>
-      <div>woshiyigezhu </div>
-      {/*{renderRoutes(route.routes)}*/}
+      {renderRoutes(route.routes)}
     </DiscoverWrapper>
   )
 })
