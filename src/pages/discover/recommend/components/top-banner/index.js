@@ -29,16 +29,16 @@ export default memo(function TopBanner() {
   const bgImage = topBanners[currentIndex] && (topBanners[currentIndex].imageUrl + "?imageView&blur=40x20")
   /*说明：useCallback在什么时候使用?
    *场景: 在将一个组件中的函数, 传递给子元素进行回调使用时, 使用useCallback对函数进行处理.*/
-  const afterCarouselChange = useCallback((current) => {
+  const beforeCarouselChange = useCallback((from,to) => {
     //current此时是topBanners的下标
-    setCurrentIndex(current);
+    setCurrentIndex(to);
   }, [setCurrentIndex])
 
   return (
     <BannerWrapper bgImage={bgImage} className="test">
       <div className="banner wrap-v2">
         <BannerLeft>
-          <Carousel effect="fade" ref={bannerRef} afterChange={afterCarouselChange}>
+          <Carousel effect="fade" ref={bannerRef} beforeChange={beforeCarouselChange}>
             {
               topBanners.map((item, index) => {
                 return (
