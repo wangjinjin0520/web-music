@@ -42,7 +42,7 @@ export default memo(function TopBanner() {
             {
               topBanners.map((item, index) => {
                 return (
-                  <div className="banner-item" key={item.imageUrl}>
+                  <div className="banner-item" key={index}>
                     <img className="image" src={item.imageUrl} alt={item.typeTitle}/>
                   </div>
                 )

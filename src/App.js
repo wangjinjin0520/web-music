@@ -7,6 +7,7 @@ import { Provider } from 'react-redux';
 
 import AppHeader from '@/components/app-header';
 import AppFooter from '@/components/app-footer';
+import PlayBar from '@/components/play-bar';
 
 export default memo(function App() {
 
@@ -20,6 +21,7 @@ export default memo(function App() {
           {renderRoutes(routes)}
         </Suspense>
         <AppFooter />
+        <PlayBar/>
       </HashRouter>
     </Provider>
   )

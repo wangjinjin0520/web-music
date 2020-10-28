@@ -89,3 +89,26 @@ export const dicoverMenu = [
     link: "/discover/album"
   },
 ]
+// discover中的数据
+export const recommendType = [
+  {
+    title: "华语",
+    link: "/discover/recommend"
+  },
+  {
+    title: "流行",
+    link: "/discover/ranking"
+  },
+  {
+    title: "摇滚",
+    link: "/discover/songs"
+  },
+  {
+    title: "民谣",
+    link: "/discover/djradio"
+  },
+  {
+    title: "电子",
+    link: "/discover/artist"
+  }
+]
