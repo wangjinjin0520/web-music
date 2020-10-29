@@ -2,7 +2,7 @@ import React, { memo } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { getSizeImage } from '@/utils/format-utils';
-// import { getSongDetailAction } from '@/pages/player/store';
+import { getSongDetailAction } from '../play/store/actionCreators';
 import { TopRankingWrapper } from './style'
 
 export default memo(function TopRanking(props) {
@@ -14,8 +14,12 @@ export default memo(function TopRanking(props) {
   const dispatch = useDispatch();
 
   // other handle
-  const playMusic = (item) => {
-    // dispatch(getSongDetailAction(item.id));
+  const playMusic = (id) => {
+    dispatch(getSongDetailAction(id));
+  }
+
+  const addMusicToList = (item)=>{
+
   }
 
   return (
@@ -42,8 +46,8 @@ export default memo(function TopRanking(props) {
                 <div className="info">
                   <span className="name text-nowrap">{item.name}</span>
                   <div className="operate">
-                    <button className="btn sprite_02 play"></button>
-                    <button className="btn sprite_icon2 addto"></button>
+                    <button className="btn sprite_02 play" onClick={()=>playMusic(item.id)}></button>
+                    <button className="btn sprite_icon2 addto" onClick={()=>addMusicToList(item)}></button>
                     <button className="btn sprite_02 favor"></button>
                   </div>
                 </div>

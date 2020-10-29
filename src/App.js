@@ -7,7 +7,7 @@ import { Provider } from 'react-redux';
 
 import AppHeader from '@/components/app-header';
 import AppFooter from '@/components/app-footer';
-import PlayBar from '@/components/play-bar';
+import PlayBar from '@/components/play';
 
 export default memo(function App() {
 

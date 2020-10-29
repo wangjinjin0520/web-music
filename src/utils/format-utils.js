@@ -47,6 +47,7 @@ export function formatMinuteSecond(time) {
   return formatDate(time, "mm:ss");
 }
 
+//根据当前歌曲的id值获取歌曲的mp3地址
 export function getPlaySong(id) {
   return `https://music.163.com/song/media/outer/url?id=${id}.mp3`;
 }
