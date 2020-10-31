@@ -1,25 +1,35 @@
 import React, { memo } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector ,shallowEqual} from 'react-redux';
 
+import {message} from 'antd'
 import { getSizeImage } from '@/utils/format-utils';
-import { getSongDetailAction } from '../play/store/actionCreators';
+import { getSongDetailAction ,changePlayList } from '../play/store/actionCreators';
 import { TopRankingWrapper } from './style'
 
 export default memo(function TopRanking(props) {
-  // props and state
+
   const { info } = props;
   const { tracks = [] } = info;
+  const {playList} = useSelector(state => ({
+    playList: state.getIn(["player", "playList"])
+  }),shallowEqual);
 
-  // redux hooks
   const dispatch = useDispatch();
 
-  // other handle
   const playMusic = (id) => {
     dispatch(getSongDetailAction(id));
   }
-
   const addMusicToList = (item)=>{
-
+    //判断是否已经在播放列表中
+    //在列表中：不在添加
+    //不在列别中：添加到末尾
+    let hasItem = playList.indexOf(item);
+    if(hasItem === -1){
+      let newPlayList = [...playList,item]
+      dispatch(changePlayList(newPlayList));
+    }else{
+      message.warn('该曲目已经在播放列表中')
+    }
   }
 
   return (

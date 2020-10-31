@@ -1,6 +1,8 @@
 import * as actionTypes from './constants';
 
-import { getSongDetail } from '@/servers/player'
+import { getSongDetail, getLyric } from '@/servers/player'
+
+import { parseLyric } from '@/utils/lrc-parse'
 
 export const changePlayList = (playList) => ({
   type: actionTypes.CHANGE_PLAY_LIST,
@@ -18,6 +20,10 @@ export const changeCurrentSongIndex = (currentSongIndex) => ({
   currentSongIndex
 })
 
+export const changeCurrentLyrics = (currentLyrics) => ({
+  type:actionTypes.CHANGE_CURRENT_LYRIC,
+  currentLyrics
+})
 
 //todo 1.获取歌曲详情
 export const getSongDetailAction = (ids) => {
@@ -27,11 +33,17 @@ export const getSongDetailAction = (ids) => {
 
     if (songIndex !== -1) {//歌曲已经在播放列表中了，直接将当前的播放index置为songIndex
       dispatch(changeCurrentSongIndex(songIndex));
-
+      //获取当前歌曲的信息
+      getLyric(ids).then(res=>{
+        //歌词分片处理
+        const lyricString = res.lrc.lyric;
+        const lyrics = parseLyric(lyricString);
+        dispatch(changeCurrentLyrics(lyrics));
+      })
     } else {//歌曲不在播放列表，重新请求并加到列表末尾
       getSongDetail(ids).then(res => {
         let newPlayList = [...playList];
-        let song = res.songs&&res.songs[0];
+        let song = res.songs && res.songs[0];
         newPlayList.push(song);
         dispatch(changePlayList(newPlayList));
         dispatch(changeCurrentSongIndex(newPlayList.length - 1));

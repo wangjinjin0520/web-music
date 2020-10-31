@@ -7,7 +7,8 @@ const defaultState = Map({
   currentSongIndex: 0,
   currentSong: {},
   sequence: 0, // 0 循环 1 随机 2 单曲
-
+  currentLyrics:[],  //当前歌曲的歌词
+  currentLyricIndex:0,  //歌词切片后的当前歌词下标
 });
 
 function reducer(state = defaultState, action) {
@@ -20,7 +21,11 @@ function reducer(state = defaultState, action) {
     case actionTypes.CHANGE_CURRENT_SONG_INDEX:
       return state.set("currentSongIndex", action.currentSongIndex);
 
-    default:
+    case actionTypes.CHANGE_CURRENT_LYRIC:
+      return state.set("currentLyrics", action.currentLyrics);
+    case actionTypes.CHANGE_CURRENT_LYRIC_Index:
+      return state.set("currentLyricIndex", action.currentSongIndex);
+     default:
       return state;
   }
 }
