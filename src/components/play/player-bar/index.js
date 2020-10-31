@@ -1,13 +1,14 @@
 import React, { memo, useState, useEffect, useRef, useCallback } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 
-import { changePlaySequence , changePlaySongAction,changeCurrentLyricIndex} from "../store/actionCreators";
+import { changePlaySequence, changePlaySongAction, changeCurrentLyricIndex } from "../store/actionCreators";
 
 import { getSizeImage, formatDate, getPlaySong } from '@/utils/format-utils';
 
 import { message, Tooltip } from 'antd';
 import { NavLink } from 'react-router-dom';
 import { Slider } from 'antd';
+import PlayerPanel from '../player-panel'
 import {
   PlayBarWrapper,
   Control,
@@ -21,6 +22,7 @@ export default memo(function PlayerBar() {
   const [currentTime, setCurrentTime] = useState(0)   // 播放进度条的时间(ms)
   const [currentProcess, setCurrentProcess] = useState(0)   // 播放进度条的时间(0-100)
   const [isSliding, setIsSliding] = useState(false)   // 是否滑动进度条
+  const [showPanel, setShowPanel] = useState(false)   // 是否展示panel
 
   const {
     currentSong,
@@ -69,8 +71,8 @@ export default memo(function PlayerBar() {
     }
     //改变歌词
     let i = 0;
-    for(;i<currentLyrics.length;i++){
-      if(currentLyrics[i].time > time){
+    for (; i < currentLyrics.length; i++) {
+      if (currentLyrics[i].time > time) {
         break
       }
     }
@@ -123,59 +125,62 @@ export default memo(function PlayerBar() {
 
 
   return (
-    <PlayBarWrapper className="sprite_playbar">
-      <div className="content wrap-v2 aaa">
-        <Control playStatus={playStatus}>
-          <button className="sprite_playbar prev" onClick={() => dispatch(changePlaySongAction(-1))}></button>
-          <button className="sprite_playbar play" onClick={() => playMusic()}></button>
-          <button className="sprite_playbar next" onClick={() => dispatch(changePlaySongAction(1))}></button>
-        </Control>
-        <PlayInfo>
-          <div className="image">
-            <NavLink to="/discover/player">
-              <img src={getSizeImage(picUrl, 35)} alt=""/>
-            </NavLink>
-          </div>
-          <div className="info">
-            <div className="song">
-              <span className="song-name">{songName}</span>
-              <a href="#/" className="singer-name">{singerName}</a>
+    <>
+      {showPanel && <PlayerPanel/>}
+      <PlayBarWrapper className="sprite_playbar">
+        <div className="content wrap-v2 aaa">
+          <Control playStatus={playStatus}>
+            <button className="sprite_playbar prev" onClick={() => dispatch(changePlaySongAction(-1))}></button>
+            <button className="sprite_playbar play" onClick={() => playMusic()}></button>
+            <button className="sprite_playbar next" onClick={() => dispatch(changePlaySongAction(1))}></button>
+          </Control>
+          <PlayInfo>
+            <div className="image">
+              <NavLink to="/discover/player">
+                <img src={getSizeImage(picUrl, 35)} alt=""/>
+              </NavLink>
             </div>
-            <div className="progress">
-              <Slider value={currentProcess}
-                      onChange={sliderChange}
-                      onAfterChange={sliderAfterChange}/>
-              <div className="time">
-                <span className="now-time">{showCurrentTime}</span>
-                <span className="divider">/</span>
-                <span className="duration">{showDuration}</span>
+            <div className="info">
+              <div className="song">
+                <span className="song-name">{songName}</span>
+                <a href="#/" className="singer-name">{singerName}</a>
+              </div>
+              <div className="progress">
+                <Slider value={currentProcess}
+                        onChange={sliderChange}
+                        onAfterChange={sliderAfterChange}/>
+                <div className="time">
+                  <span className="now-time">{showCurrentTime}</span>
+                  <span className="divider">/</span>
+                  <span className="duration">{showDuration}</span>
+                </div>
               </div>
             </div>
-          </div>
-        </PlayInfo>
-        <Operator sequence={playSequence}>
-          <div className="left">
-            <button className="sprite_playbar btn favor"></button>
-            <button className="sprite_playbar btn share"></button>
-          </div>
-          <div className="right sprite_playbar">
-            <button className="sprite_playbar btn volume"></button>
-            <Tooltip placement="top" title={sequenceTextMap[playSequence]}>
-              <button className="sprite_playbar btn loop"
-                      onClick={() => dispatch(changePlaySequence(playSequence + 1))}></button>
-            </Tooltip>
-            <button className="sprite_playbar btn playlist">
-              {playList.length}
-            </button>
-          </div>
-        </Operator>
-      </div>
+          </PlayInfo>
+          <Operator sequence={playSequence}>
+            <div className="left">
+              <button className="sprite_playbar btn favor"></button>
+              <button className="sprite_playbar btn share"></button>
+            </div>
+            <div className="right sprite_playbar">
+              <button className="sprite_playbar btn volume"></button>
+              <Tooltip placement="top" title={sequenceTextMap[playSequence]}>
+                <button className="sprite_playbar btn loop"
+                        onClick={() => dispatch(changePlaySequence(playSequence + 1))}></button>
+              </Tooltip>
+              <button className="sprite_playbar btn playlist" onClick={()=>{setShowPanel(!showPanel)}}>
+                <span>{playList.length}</span>
+              </button>
+            </div>
+          </Operator>
+        </div>
 
-      {/* ref 本身需要 .current才能拿到 dom 元素*/}
-      <audio ref={audioRef}
-             onTimeUpdate={e => timeUpdate(e)}
-             onEnded={() => handleMusicEnded()}
-      />
-    </PlayBarWrapper>
+        {/* ref 本身需要 .current才能拿到 dom 元素*/}
+        <audio ref={audioRef}
+               onTimeUpdate={e => timeUpdate(e)}
+               onEnded={() => handleMusicEnded()}
+        />
+      </PlayBarWrapper>
+    </>
   )
 });

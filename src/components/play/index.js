@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 
 import PlayerBar from './player-bar'
-import PlayerPanel from './player-panel'
+// import PlayerPanel from './player-panel'
 
 import {
   AppPlayerWrapper
@@ -12,7 +12,7 @@ export default memo(function Player() {
   return (
     <AppPlayerWrapper >
       <div className="content">
-        <PlayerPanel/>
+        {/*<PlayerPanel/>*/}
         <PlayerBar/>
       </div>
     </AppPlayerWrapper>

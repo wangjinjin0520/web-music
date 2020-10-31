@@ -165,6 +165,9 @@ export const Operator = styled.div`
     .playlist {
       width: 59px;
       background-position: -42px -68px;
+      span {
+        float: right;
+      }
     } 
   }
 `
