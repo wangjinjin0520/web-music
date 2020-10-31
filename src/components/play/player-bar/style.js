@@ -34,6 +34,9 @@ export const Control = styled.div`
 
   .prev {
     background-position: 0 -130px;
+    &:hover {
+      background-position: -30px -130px;
+    }
   }
 
   .play {
@@ -45,6 +48,9 @@ export const Control = styled.div`
 
   .next {
     background-position: -80px -130px;
+    &:hover {
+      background-position: -110px -130px;
+    }
   }
 `
 

@@ -1,25 +1,32 @@
-import React, { memo } from 'react';
+import React, { memo, useEffect, useRef } from 'react';
 import { shallowEqual, useSelector } from "react-redux";
 
 import classNames from 'classNames';
+import { scrollTo } from "@/utils/ui-helper";
 
 import { PlayerPanelLyricWrapper } from './style';
 
 export default memo(function PlayerPanelLyric() {
-  const {currentLyrics,currentLyricsIndex} = useSelector(state => ({
+  const {currentLyrics,currentLyricIndex} = useSelector(state => ({
     currentLyrics: state.getIn(["player", "currentLyrics"]),
-    currentLyricsIndex: state.getIn(["player", "currentLyricIndex"]),
+    currentLyricIndex: state.getIn(["player", "currentLyricIndex"]),
   }),shallowEqual)
 
+  const panelRef = useRef();
+  useEffect(() => {
+    if (currentLyricIndex > 0 && currentLyricIndex < 3) return;
+    scrollTo(panelRef.current, (currentLyricIndex - 3) * 32, 300)
+  }, [currentLyricIndex]);
 
+console.log(currentLyricIndex)
   return (
-    <PlayerPanelLyricWrapper>
+    <PlayerPanelLyricWrapper ref={panelRef}>
       <div className="lrc-content">
         {
           currentLyrics.map((item, index) => {
             return (
-              <div key={item.time}
-                   className={classNames("lrc-item", { "active": index === currentLyricsIndex })}>
+              <div key={item.time + index}
+                   className={classNames("lrc-item", { "active": index === currentLyricIndex })}>
                 {item.content}
               </div>
             )

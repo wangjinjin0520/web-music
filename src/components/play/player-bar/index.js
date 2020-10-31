@@ -1,9 +1,11 @@
 import React, { memo, useState, useEffect, useRef, useCallback } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 
+import { changePlaySequence , changePlaySongAction,changeCurrentLyricIndex} from "../store/actionCreators";
+
 import { getSizeImage, formatDate, getPlaySong } from '@/utils/format-utils';
 
-import { message } from 'antd';
+import { message, Tooltip } from 'antd';
 import { NavLink } from 'react-router-dom';
 import { Slider } from 'antd';
 import {
@@ -20,8 +22,18 @@ export default memo(function PlayerBar() {
   const [currentProcess, setCurrentProcess] = useState(0)   // 播放进度条的时间(0-100)
   const [isSliding, setIsSliding] = useState(false)   // 是否滑动进度条
 
-  const { currentSong } = useSelector(state => ({
+  const {
+    currentSong,
+    playSequence,
+    playList,
+    currentLyrics,
+    currentLyricIndex
+  } = useSelector(state => ({
     currentSong: state.getIn(["player", "currentSong"]),
+    playSequence: state.getIn(["player", "playSequence"]),
+    playList: state.getIn(["player", "playList"]),
+    currentLyrics: state.getIn(["player", "currentLyrics"]),
+    currentLyricIndex: state.getIn(["player", "currentLyricIndex"])
   }), shallowEqual);
 
   const picUrl = (currentSong.al && currentSong.al.picUrl) || "";
@@ -30,6 +42,7 @@ export default memo(function PlayerBar() {
   const duration = currentSong.dt || 0;
   const showDuration = formatDate(duration, "mm:ss");    //歌曲总时间
   const showCurrentTime = formatDate(currentTime, "mm:ss");   //歌曲已经播放的时间
+  const sequenceTextMap = ['顺序', '随机', '单曲'];
 
   const dispatch = useDispatch();
   const audioRef = useRef();
@@ -47,17 +60,42 @@ export default memo(function PlayerBar() {
 
   //音乐播放进度条更新的回调函数
   const timeUpdate = (e) => {
-    // console.log(e.target.currentTime)  //这个currentTime是秒
-    setCurrentTime(e.target.currentTime * 1000);
+    let time = e.target.currentTime * 1000;   //ms
+    setCurrentTime(time);
     //在滑动slide过程中不会回弹到原时间
-    if(!isSliding){
+    if (!isSliding) {
       let process = currentTime / duration * 100;   //(ms/ms * 100)
       setCurrentProcess(process)
     }
+    //改变歌词
+    let i = 0;
+    for(;i<currentLyrics.length;i++){
+      if(currentLyrics[i].time > time){
+        break
+      }
+    }
+    const finalIndex = i - 1;
+    if (finalIndex !== currentLyricIndex) {
+      dispatch(changeCurrentLyricIndex(finalIndex));
+      //同一个key的message不共存，会随着新的的出现旧的消失
+      message.open({
+        content: currentLyrics[finalIndex].content,
+        key: "lyric",
+        duration: 0,
+        className: 'lyric-message',
+      })
+    }
   }
+
   //当前歌曲播放结束的回调函数(下一首)
   const handleMusicEnded = () => {
-
+    //区分顺序 ， 随机 ， 单曲
+    if (playSequence === 2 || playList.length === 1) {
+      audioRef.current.currentTime = 0;
+      audioRef.current.play();
+    } else {//顺序或者随机
+      dispatch(changePlaySongAction(1));
+    }
   }
 
   //slide滑动，更新currentTime。并且更新过程中
@@ -88,9 +126,9 @@ export default memo(function PlayerBar() {
     <PlayBarWrapper className="sprite_playbar">
       <div className="content wrap-v2 aaa">
         <Control playStatus={playStatus}>
-          <button className="sprite_playbar prev"></button>
+          <button className="sprite_playbar prev" onClick={() => dispatch(changePlaySongAction(-1))}></button>
           <button className="sprite_playbar play" onClick={() => playMusic()}></button>
-          <button className="sprite_playbar next"></button>
+          <button className="sprite_playbar next" onClick={() => dispatch(changePlaySongAction(1))}></button>
         </Control>
         <PlayInfo>
           <div className="image">
@@ -115,15 +153,20 @@ export default memo(function PlayerBar() {
             </div>
           </div>
         </PlayInfo>
-        <Operator>
+        <Operator sequence={playSequence}>
           <div className="left">
             <button className="sprite_playbar btn favor"></button>
             <button className="sprite_playbar btn share"></button>
           </div>
           <div className="right sprite_playbar">
             <button className="sprite_playbar btn volume"></button>
-            <button className="sprite_playbar btn loop"></button>
-            <button className="sprite_playbar btn playlist"></button>
+            <Tooltip placement="top" title={sequenceTextMap[playSequence]}>
+              <button className="sprite_playbar btn loop"
+                      onClick={() => dispatch(changePlaySequence(playSequence + 1))}></button>
+            </Tooltip>
+            <button className="sprite_playbar btn playlist">
+              {playList.length}
+            </button>
           </div>
         </Operator>
       </div>
